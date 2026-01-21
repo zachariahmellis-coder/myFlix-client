@@ -3,18 +3,17 @@ import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 
 export const MainView = () => {
-  // Mock data (shape is similar to what your API will return)
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
   useEffect(() => {
-  fetch("https://cryptic-lowlands-83913-a6a2dd7d9144.herokuapp.com/movies")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("movies from api:", data);
-      setMovies(data);
-    })
-    .catch((err) => console.error(err));
+    fetch("https://cryptic-lowlands-83913-a6a2dd7d9144.herokuapp.com/movies")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("movies from api:", data);
+        setMovies(data);
+      })
+      .catch((err) => console.error(err));
   }, []);
 
   // If a movie is selected, show the MovieView
