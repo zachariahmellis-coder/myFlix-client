@@ -1,3 +1,4 @@
+// src/components/signup-view/signup-view.jsx
 import { useState } from "react";
 
 export const SignupView = () => {
@@ -13,7 +14,7 @@ export const SignupView = () => {
       Username: username,
       Password: password,
       Email: email,
-      Birthday: birthday,
+      Birthday: birthday || undefined,
     };
 
     fetch("https://cryptic-lowlands-83913-a6a2dd7d9144.herokuapp.com/users", {
@@ -23,16 +24,28 @@ export const SignupView = () => {
       },
       body: JSON.stringify(data),
     })
-      .then((response) => {
-        if (response.ok) {
-          alert("Signup successful! Please log in.");
-          window.location.reload();
-        } else {
-          alert("Signup failed");
+      .then(async (response) => {
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          // CareerFoundry is fine with a generic message, but this helps debugging
+          throw new Error(
+            body.message ||
+              (body.errors ? body.errors[0]?.msg : null) ||
+              "Signup failed"
+          );
         }
+        return body;
       })
-      .catch(() => {
-        alert("Something went wrong");
+      .then(() => {
+        alert("Signup successful! Please log in.");
+        // Clear the form (cleaner than reload)
+        setUsername("");
+        setPassword("");
+        setEmail("");
+        setBirthday("");
+      })
+      .catch((e) => {
+        alert(e.message || "Something went wrong");
       });
   };
 

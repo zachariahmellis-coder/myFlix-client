@@ -1,47 +1,103 @@
-# myFlix Client
+myFlix Client
 
-This repository contains the client-side code for the myFlix application, built using React and Parcel as part of CareerFoundry Achievement 3.
+The myFlix Client is a single-page application built with React that allows users to browse movies, view details, and manage authentication. This project was developed as part of the CareerFoundry Software Engineering program and connects to a custom RESTful API.
 
-## Description
+The application demonstrates client-side authentication, protected API requests using JWTs, and form handling with validation.
 
-The project sets up a basic React development environment using Parcel as the build tool. It demonstrates the build process, including transpilation, bundling, and serving the application locally.
+Features
 
-At this stage, the app renders a simple "Good morning" message to confirm that the React setup and Parcel build process are working correctly.
+User login and signup forms with client-side validation
 
-## Technologies Used
+JWT-based authentication
 
-- React
-- React DOM
-- Parcel
-- SCSS
-- Node.js
-- npm
+Authentication state persisted with localStorage
 
-## Project Structure
+Protected movie fetching using Bearer tokens
 
-myFlix-client  
-├── .gitignore  
-├── package.json  
-├── package-lock.json  
-├── README.md  
-└── src  
-&nbsp;&nbsp;&nbsp;&nbsp;├── index.html  
-&nbsp;&nbsp;&nbsp;&nbsp;├── index.jsx  
-&nbsp;&nbsp;&nbsp;&nbsp;└── index.scss
+Logout functionality that clears session data
 
-## Setup Instructions
+Movie list and detailed movie view
 
-1. Install dependencies:
-   npm install
+Conditional rendering based on authentication state
 
-2. Start the development server:
-   npx parcel src/index.html
+Tech Stack
 
-3. Open the application in your browser:
-   http://localhost:1234
+React
 
-When the project is running correctly, a "Good morning" message will be displayed in the browser.
+JavaScript (ES6+)
 
-## Notes
+Parcel (build tool)
 
-This project is intended for development and learning purposes and serves as the foundation for building the full myFlix client application in later exercises.
+HTML5
+
+CSS
+
+Node.js / npm
+
+Project Structure
+myFlix-client
+├── package.json
+├── package-lock.json
+├── README.md
+├── src
+│ ├── index.html
+│ ├── index.jsx
+│ ├── index.scss
+│ └── components
+│ ├── main-view
+│ │ └── main-view.jsx
+│ ├── login-view
+│ │ └── login-view.jsx
+│ ├── signup-view
+│ │ └── signup-view.jsx
+│ ├── movie-card
+│ │ └── movie-card.jsx
+│ └── movie-view
+│ └── movie-view.jsx
+
+How to Run the Client (Local)
+
+Install dependencies:
+
+npm install
+
+Start the development server:
+
+npx parcel src/index.html
+
+Open the app in your browser:
+
+http://localhost:1234
+
+Authentication Flow
+
+New users can register using the signup form.
+
+Existing users log in with their credentials.
+
+On successful login:
+
+A JWT and user object are stored in localStorage.
+
+Authenticated requests include the JWT in the Authorization header.
+
+Logging out clears localStorage and resets application state.
+
+API Integration
+
+The client consumes a custom REST API that provides:
+
+User registration and authentication
+
+Secure movie data access via JWT authorization
+
+All requests to protected endpoints include a valid Bearer token.
+
+Project Status
+
+This client fulfills the requirements for CareerFoundry Exercise 3.5: React Forms and Authentication. It is designed to be extended in later exercises with client-side routing, profile management, and additional features.
+
+Author
+
+Zachariah M. Ellis
+CareerFoundry Software Engineering Student
