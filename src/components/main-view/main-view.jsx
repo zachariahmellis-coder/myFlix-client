@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
+import { LoginView } from "../login-view/login-view";
 
 export const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -12,15 +13,33 @@ export const MainView = () => {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  useEffect(() => {
-    fetch("https://cryptic-lowlands-83913-a6a2dd7d9144.herokuapp.com/movies")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("movies from api:", data);
-        setMovies(data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+if (!user) {
+  return (
+    <LoginView
+      onLoggedIn={(user, token) => {
+        setUser(user);
+        setToken(token);
+      }}
+    />
+  );
+}
+
+
+useEffect(() => {
+  if (!token) return;
+
+  fetch("https://cryptic-lowlands-83913-a6a2dd7d9144.herokuapp.com/movies", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("movies from api:", data);
+      setMovies(data);
+    })
+    .catch((err) => console.error(err));
+}, [token]);
 
   const onLoggedOut = () => {
     setUser(null);
@@ -41,9 +60,9 @@ export const MainView = () => {
   }
 
   // If no movies exist (edge case)
-  if (!movies || movies.length === 0) {
-    return <div>The list is empty!</div>;
-  }
+if (movies.length === 0) {
+  return <div>Loading...</div>;
+}
 
   // Otherwise show the list of MovieCards
   return (
