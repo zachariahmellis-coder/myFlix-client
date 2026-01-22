@@ -3,6 +3,12 @@ import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 
 export const MainView = () => {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const storedToken = localStorage.getItem("token");
+
+  const [user, setUser] = useState(storedUser ? storedUser : null);
+  const [token, setToken] = useState(storedToken ? storedToken : null);
+
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
@@ -15,6 +21,14 @@ export const MainView = () => {
       })
       .catch((err) => console.error(err));
   }, []);
+
+  const onLoggedOut = () => {
+    setUser(null);
+    setToken(null);
+    setMovies([]);
+    setSelectedMovie(null);
+    localStorage.clear();
+  };
 
   // If a movie is selected, show the MovieView
   if (selectedMovie) {
@@ -34,11 +48,19 @@ export const MainView = () => {
   // Otherwise show the list of MovieCards
   return (
     <div>
+      {user && (
+        <button onClick={onLoggedOut} style={{ marginBottom: "1rem" }}>
+          Logout
+        </button>
+      )}
+
       {movies.map((movie) => (
         <MovieCard
           key={movie._id}
           movie={movie}
-          onMovieClick={(newSelectedMovie) => setSelectedMovie(newSelectedMovie)}
+          onMovieClick={(newSelectedMovie) =>
+            setSelectedMovie(newSelectedMovie)
+          }
         />
       ))}
     </div>
