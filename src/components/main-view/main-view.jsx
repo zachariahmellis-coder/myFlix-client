@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
 
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
@@ -77,10 +78,11 @@ export const MainView = () => {
           {/* If you already have logout elsewhere, delete this button block.
               Otherwise, leaving it is handy while developing. */}
           <div className="mt-3">
-            <button className="btn btn-outline-secondary" onClick={handleLogout}>
+            <Button variant="outline-secondary" onClick={handleLogout}>
               Logout
-            </button>
+            </Button>
           </div>
+
         </Col>
       ) : movies.length === 0 ? (
         <Col>
