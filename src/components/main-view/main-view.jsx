@@ -1,14 +1,15 @@
 // src/components/main-view/main-view.jsx
-
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
 
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
+import { ProfileView } from "../profile-view/profile-view.jsx";
+import { NavigationBar } from "../navigation-bar/navigation-bar";
 
 export const MainView = () => {
   const [user, setUser] = useState(() => {
@@ -18,9 +19,7 @@ export const MainView = () => {
 
   const [token, setToken] = useState(() => localStorage.getItem("token"));
   const [movies, setMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
 
-  // Fetch movies whenever we have a valid token
   useEffect(() => {
     if (!token) return;
 
@@ -34,69 +33,135 @@ export const MainView = () => {
       .then((data) => setMovies(data))
       .catch((err) => {
         console.error(err);
-        // If token is invalid/expired, force logout
         setUser(null);
         setToken(null);
         setMovies([]);
-        setSelectedMovie(null);
         localStorage.removeItem("user");
         localStorage.removeItem("token");
       });
   }, [token]);
 
-  // Called by LoginView after successful login
   const handleLoggedIn = (loggedInUser, authToken) => {
     setUser(loggedInUser);
     setToken(authToken);
-
     localStorage.setItem("user", JSON.stringify(loggedInUser));
     localStorage.setItem("token", authToken);
   };
 
-  // Optional: if you have a logout button elsewhere, you can export/prop this,
-  // but leaving it here is fine for now.
   const handleLogout = () => {
     setUser(null);
     setToken(null);
     setMovies([]);
-    setSelectedMovie(null);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   };
 
   return (
-    <Row className="justify-content-md-center">
-      {!user ? (
-        <Col md={5}>
-          <LoginView onLoggedIn={handleLoggedIn} />
-          <div className="my-3 text-center">or</div>
-          <SignupView />
-        </Col>
-      ) : selectedMovie ? (
-        <Col md={8}>
-          <MovieView movie={selectedMovie} onBackClick={() => setSelectedMovie(null)} />
-          {/* If you already have logout elsewhere, delete this button block.
-              Otherwise, leaving it is handy while developing. */}
-          <div className="mt-3">
-            <Button variant="outline-secondary" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
+    <BrowserRouter>
+      <NavigationBar user={user} onLoggedOut={handleLogout} />
 
-        </Col>
-      ) : movies.length === 0 ? (
-        <Col>
-          <div>The list is empty!</div>
-        </Col>
-      ) : (
-        <>
-          {movies.map((movie) => (
-            <Col key={movie._id} md={3} className="mb-5">
-              <MovieCard movie={movie} onMovieClick={(m) => setSelectedMovie(m)} />
-            </Col>
-          ))}
-        </>
-      )}
-    </Row>
+      <Row className="justify-content-md-center">
+        <Routes>
+          <Route
+            path="/signup"
+            element={
+              <>
+                {user ? (
+                  <Navigate to="/" replace />
+                ) : (
+                  <Col md={5}>
+                    <SignupView />
+                  </Col>
+                )}
+              </>
+            }
+          />
+
+          <Route
+            path="/login"
+            element={
+              <>
+                {user ? (
+                  <Navigate to="/" replace />
+                ) : (
+                  <Col md={5}>
+                    <LoginView onLoggedIn={handleLoggedIn} />
+                  </Col>
+                )}
+              </>
+            }
+          />
+
+          <Route
+            path="/movies/:movieId"
+            element={
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : movies.length === 0 ? (
+                  <Col>The list is empty!</Col>
+                ) : (
+                  <Col md={8}>
+<MovieView
+  movies={movies}
+  user={user}
+  token={token}
+  onUserUpdated={(updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+  }}
+/>
+                  </Col>
+                )}
+              </>
+            }
+          />
+
+          <Route
+            path="/profile"
+            element={
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : (
+                  <Col md={8}>
+                    <ProfileView
+                      user={user}
+                      token={token}
+                      movies={movies}
+                      onUserUpdated={(updatedUser) => {
+                        setUser(updatedUser);
+                        localStorage.setItem("user", JSON.stringify(updatedUser));
+                      }}
+                    />
+                  </Col>
+                )}
+              </>
+            }
+          />
+
+          <Route
+            path="/"
+            element={
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : movies.length === 0 ? (
+                  <Col>The list is empty!</Col>
+                ) : (
+                  <>
+                    {movies.map((movie) => (
+                      <Col key={movie._id} md={3} className="mb-5">
+                        <MovieCard movie={movie} />
+                      </Col>
+                    ))}
+                  </>
+                )}
+              </>
+            }
+          />
+        </Routes>
+      </Row>
+    </BrowserRouter>
   );
 };
