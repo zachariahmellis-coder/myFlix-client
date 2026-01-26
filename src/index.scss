@@ -1,5 +1,6 @@
-$color: steelblue;
+/* Bootstrap theme customization */
+$primary: SeaGreen;
+$body-bg: Honeydew;
 
-.my-flix {
-  color: $color;
-}
+/* Import Bootstrap SCSS */
+@import "~bootstrap/scss/bootstrap.scss";
