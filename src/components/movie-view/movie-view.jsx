@@ -1,8 +1,17 @@
 import PropTypes from "prop-types";
+import Button from "react-bootstrap/Button";
 
 export const MovieView = ({ movie, onBackClick }) => {
   return (
     <div>
+      <Button
+        variant="secondary"
+        onClick={onBackClick}
+        className="mb-3"
+      >
+        Back
+      </Button>
+
       <div>
         <img
           src={movie.ImagePath}
@@ -30,10 +39,6 @@ export const MovieView = ({ movie, onBackClick }) => {
         <strong>Director: </strong>
         <span>{movie.Director?.Name}</span>
       </div>
-
-      <button onClick={onBackClick} style={{ marginTop: "16px" }}>
-        Back
-      </button>
     </div>
   );
 };
