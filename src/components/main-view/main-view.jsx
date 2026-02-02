@@ -6,8 +6,7 @@ import Button from "react-bootstrap/Button";
 
 import { MovieCard } from "../movie-card/movie-card";
 import { LoginView } from "../login-view/login-view";
-
-const API_URL = "https://cryptic-lowlands-83913-a6a2dd7d9144.herokuapp.com";
+import { API_URL } from "../../config"; // <-- adjust path if needed
 
 export const MainView = () => {
   const storedUser = localStorage.getItem("user");
@@ -32,11 +31,11 @@ export const MainView = () => {
       .catch((err) => console.log("Error fetching movies:", err));
   }, [token]);
 
-  const onLoggedIn = (user, token) => {
-    setUser(user);
-    setToken(token);
-    localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("token", token);
+  const onLoggedIn = (nextUser, nextToken) => {
+    setUser(nextUser);
+    setToken(nextToken);
+    localStorage.setItem("user", JSON.stringify(nextUser));
+    localStorage.setItem("token", nextToken);
   };
 
   const onLoggedOut = () => {

@@ -1,47 +1,33 @@
 # myFlix Client
 
-This repository contains the client-side code for the myFlix application, built using React and Parcel as part of CareerFoundry Achievement 3.
+A React single-page application (SPA) for browsing movies and managing a user profile + favorites. This client consumes the myFlix REST API.
 
-## Description
+## Live Demo
 
-The project sets up a basic React development environment using Parcel as the build tool. It demonstrates the build process, including transpilation, bundling, and serving the application locally.
+- https://steady-semifreddo-2c899c.netlify.app
 
-At this stage, the app renders a simple "Good morning" message to confirm that the React setup and Parcel build process are working correctly.
+## API
 
-## Technologies Used
+- https://cryptic-lowlands-83913-a6a2dd7d9144.herokuapp.com
+
+## Features
+
+- Login/authentication
+- Browse movie catalog
+- Search/filter movies by title, genre, or director
+- View movie details
+- Profile management (view/update user info)
+- Add/remove favorite movies
+- Auth persistence via localStorage
+
+## Tech Stack
 
 - React
-- React DOM
+- React Bootstrap
 - Parcel
-- SCSS
-- Node.js
-- npm
+- Netlify (deployment)
 
-## Project Structure
+## Run Locally
 
-myFlix-client  
-├── .gitignore  
-├── package.json  
-├── package-lock.json  
-├── README.md  
-└── src  
-&nbsp;&nbsp;&nbsp;&nbsp;├── index.html  
-&nbsp;&nbsp;&nbsp;&nbsp;├── index.jsx  
-&nbsp;&nbsp;&nbsp;&nbsp;└── index.scss
-
-## Setup Instructions
-
-1. Install dependencies:
-   npm install
-
-2. Start the development server:
-   npx parcel src/index.html
-
-3. Open the application in your browser:
-   http://localhost:1234
-
-When the project is running correctly, a "Good morning" message will be displayed in the browser.
-
-## Notes
-
-This project is intended for development and learning purposes and serves as the foundation for building the full myFlix client application in later exercises.
+npm install
+npm start
