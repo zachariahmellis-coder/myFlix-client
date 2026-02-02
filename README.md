@@ -31,3 +31,7 @@ A React single-page application (SPA) for browsing movies and managing a user pr
 
 npm install
 npm start
+
+## Build
+
+npm run build
