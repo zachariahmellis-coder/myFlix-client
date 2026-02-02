@@ -1,19 +1,56 @@
-import { Button, Card } from "react-bootstrap";
+import PropTypes from "prop-types";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import { useNavigate } from "react-router-dom";
 
-export const MovieCard = ({ movie, onMovieClick }) => {
+// ✅ Use one API base everywhere
+const API_URL = "https://cryptic-lowlands-83913-a6a2dd7d9144.herokuapp.com";
+
+export const MovieCard = ({ movie }) => {
+  const navigate = useNavigate();
+
+  // ✅ Build a safe image URL
+  const imageUrl = movie.ImagePath
+    ? movie.ImagePath.startsWith("http")
+      ? movie.ImagePath
+      : `${API_URL}/${movie.ImagePath.replace(/^\//, "")}`
+    : null;
+
   return (
     <Card className="h-100">
-      {/* If you have an image URL, use it; if not, omit Card.Img */}
-      {/* <Card.Img variant="top" src={movie.ImagePath} /> */}
-      <Card.Body>
+      {imageUrl ? (
+        <Card.Img
+          variant="top"
+          src={imageUrl}
+          alt={movie.Title}
+          style={{ height: "350px", objectFit: "cover" }}
+        />
+      ) : null}
+
+      <Card.Body className="d-flex flex-column">
         <Card.Title>{movie.Title}</Card.Title>
-        <Card.Text className="text-muted">
-          {movie.Director?.Name}
+
+        <Card.Text className="text-muted mb-2">
+          {movie.Director?.Name || "Unknown Director"}
         </Card.Text>
-        <Button variant="link" onClick={() => onMovieClick(movie)}>
-          Open
-        </Button>
+
+        <div className="mt-auto">
+          <Button variant="link" onClick={() => navigate(`/movies/${movie._id}`)}>
+            Open
+          </Button>
+        </div>
       </Card.Body>
     </Card>
   );
+};
+
+MovieCard.propTypes = {
+  movie: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    Title: PropTypes.string.isRequired,
+    ImagePath: PropTypes.string,
+    Director: PropTypes.shape({
+      Name: PropTypes.string,
+    }),
+  }).isRequired,
 };
