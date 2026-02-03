@@ -4,6 +4,8 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 
+import { SignupView } from "../signup-view/signup-view";
+
 const API_URL = "https://cryptic-lowlands-83913-a6a2dd7d9144.herokuapp.com";
 
 export const LoginView = ({ onLoggedIn }) => {
@@ -12,6 +14,7 @@ export const LoginView = ({ onLoggedIn }) => {
 
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -57,6 +60,21 @@ export const LoginView = ({ onLoggedIn }) => {
       });
   };
 
+  if (showSignup) {
+    return (
+      <>
+        <SignupView />
+        <Button
+          variant="link"
+          className="mt-3"
+          onClick={() => setShowSignup(false)}
+        >
+          ← Back to Login
+        </Button>
+      </>
+    );
+  }
+
   return (
     <Form onSubmit={handleSubmit}>
       <h2 className="mb-3">Login</h2>
@@ -92,8 +110,20 @@ export const LoginView = ({ onLoggedIn }) => {
         />
       </Form.Group>
 
-      <Button variant="primary" type="submit" disabled={isSubmitting}>
+      <Button
+        variant="primary"
+        type="submit"
+        disabled={isSubmitting}
+        className="me-2"
+      >
         {isSubmitting ? "Logging in..." : "Login"}
+      </Button>
+
+      <Button
+        variant="outline-secondary"
+        onClick={() => setShowSignup(true)}
+      >
+        Create an account
       </Button>
     </Form>
   );
