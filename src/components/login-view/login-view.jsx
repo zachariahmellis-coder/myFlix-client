@@ -1,10 +1,10 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
-
-const API_URL = "https://cryptic-lowlands-83913-a6a2dd7d9144.herokuapp.com";
+import { API_URL } from "../../config";
 
 export const LoginView = ({ onLoggedIn }) => {
   const [username, setUsername] = useState("");
@@ -32,10 +32,7 @@ export const LoginView = ({ onLoggedIn }) => {
         const data = await res.json().catch(() => null);
 
         if (!res.ok) {
-          const msg =
-            data?.message ||
-            data?.error ||
-            "Invalid username or password";
+          const msg = data?.message || data?.error || "Invalid username or password";
           throw new Error(msg);
         }
 
@@ -45,16 +42,12 @@ export const LoginView = ({ onLoggedIn }) => {
 
         return data;
       })
-      .then((data) => {
-        onLoggedIn(data.user, data.token);
-      })
+      .then((data) => onLoggedIn(data.user, data.token))
       .catch((err) => {
         console.log("Login error:", err);
         setError(err.message || "Something went wrong. Please try again.");
       })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+      .finally(() => setIsSubmitting(false));
   };
 
   return (
@@ -92,9 +85,15 @@ export const LoginView = ({ onLoggedIn }) => {
         />
       </Form.Group>
 
-      <Button variant="primary" type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Logging in..." : "Login"}
-      </Button>
+      <div className="d-flex gap-2 align-items-center">
+        <Button variant="primary" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Logging in..." : "Login"}
+        </Button>
+
+        <Button as={Link} to="/signup" variant="outline-secondary">
+          Create an account
+        </Button>
+      </div>
     </Form>
   );
 };

@@ -1,48 +1,90 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
+import { API_URL } from "../../config";
+
 export const SignupView = () => {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [birthday, setBirthday] = useState("");
 
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    setError("");
+    setSuccess("");
+    setIsSubmitting(true);
 
     const data = {
-      Username: username,
+      Username: username.trim(),
       Password: password,
-      Email: email,
-      Birthday: birthday,
+      Email: email.trim(),
+      Birthday: birthday || undefined,
     };
 
-    fetch("https://cryptic-lowlands-83913-a6a2dd7d9144.herokuapp.com/users", {
+    fetch(`${API_URL}/users`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     })
-      .then((response) => {
-        if (response.ok) {
-          alert("Signup successful");
-          setUsername("");
-          setPassword("");
-          setEmail("");
-          setBirthday("");
-        } else {
-          alert("Signup failed");
+      .then(async (res) => {
+        const payload = await res.json().catch(() => null);
+        if (!res.ok) {
+          const msg =
+            payload?.message ||
+            payload?.error ||
+            payload?.errors?.[0]?.msg ||
+            "Signup failed. Please try again.";
+          throw new Error(msg);
         }
+        return payload;
       })
-      .catch((error) => {
-        console.error("Error during signup:", error);
-      });
+      .then(() => {
+        setSuccess("Signup successful! Redirecting to login…");
+        setUsername("");
+        setPassword("");
+        setEmail("");
+        setBirthday("");
+
+        setTimeout(() => navigate("/", { replace: true }), 800);
+      })
+      .catch((err) => {
+        console.error("Error during signup:", err);
+        setError(err.message || "Signup failed. Please try again.");
+      })
+      .finally(() => setIsSubmitting(false));
   };
 
   return (
     <Form onSubmit={handleSubmit}>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 className="m-0">Sign Up</h2>
+        <Link to="/" className="btn btn-outline-secondary btn-sm">
+          Back to Login
+        </Link>
+      </div>
+
+      {error ? (
+        <Alert variant="danger" className="mb-3">
+          {error}
+        </Alert>
+      ) : null}
+
+      {success ? (
+        <Alert variant="success" className="mb-3">
+          {success}
+        </Alert>
+      ) : null}
+
       <Form.Group controlId="formUsername" className="mb-3">
         <Form.Label>Username</Form.Label>
         <Form.Control
@@ -50,7 +92,8 @@ export const SignupView = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
-          minLength="3"
+          minLength={5}
+          placeholder="Username (min 5 chars)"
         />
       </Form.Group>
 
@@ -61,7 +104,8 @@ export const SignupView = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          minLength="6"
+          minLength={6}
+          placeholder="Password (min 6 chars)"
         />
       </Form.Group>
 
@@ -72,6 +116,7 @@ export const SignupView = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          placeholder="name@example.com"
         />
       </Form.Group>
 
@@ -84,8 +129,8 @@ export const SignupView = () => {
         />
       </Form.Group>
 
-      <Button variant="primary" type="submit">
-        Sign Up
+      <Button variant="primary" type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Creating..." : "Sign Up"}
       </Button>
     </Form>
   );
